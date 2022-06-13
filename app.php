@@ -1,30 +1,28 @@
 <?php
 
+require_once 'src/Item/Item.php';
+require_once 'src/Item/ItemCode.php';
+require_once 'src/Exception/InvalidInputException.php';
+require_once 'src/Input/InputHandler.php';
+
+use VendingMachine\Item\Item;
+use VendingMachine\Item\ItemCode;
 use VendingMachine\Exception\InvalidInputException;
+use VendingMachine\Input\InputHandler;
 
-$options = [
-	'AVAILABLE ' => 'OPTIONS',
-	'Symbols: ' => 'N, D, Q, DOLLAR',
-	'Actions: ' => 'GET-A, GET-B, GET-C, RETURN-MONEY',
+$itemArray = [
+	new Item(0.65, 1, new ItemCode('A')),
+	new Item(1.0, 1, new ItemCode('B')),
+	new Item(1.5, 1, new ItemCode('C')),
 ];
-
-foreach($options as $key => $option) {
-	echo $key . $option . PHP_EOL;
-}
 
 while(true) {
 	try {
-		// $input = $inputHandler->getInput();
+		$input = $inputHandler->getInput();
 		
-		// 1. Pobieranie znaków z klawiatury (odesłanie do danej klasy
-			// i przetworzenie z niej danych)
-		// 2. Stworzenie produktów po uruchomieniu programu
-		// 3. Ustawienie salda początkowego na $0
-		// 4. Ustalenie stałych cen produktów
-		// 5. Ustawienie stałych wartości monet
-
-
-
+		// Testy - PHPUnit (assert)
+		
+		
 	}
 	catch(InvalidInputException $e) {
 		echo "Invalid input, try again...\n";

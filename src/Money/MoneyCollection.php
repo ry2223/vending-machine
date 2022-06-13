@@ -1,40 +1,43 @@
 <?php
 
-// namespace VendingMachine\Money;
+namespace VendingMachine\Money;
 
-// class MoneyCollection implements MoneyCollectionInterface
-// {
-//     private array $collectedMoney;
+require_once 'MoneyCollectionInterface.php';
+require_once 'MoneyInterface.php';
 
-//     public function __construct() {
-//         $this->empty();
-//     }
+class MoneyCollection implements MoneyCollectionInterface
+{
+    private array $collectedMoney;
 
-//     public function add(MoneyInterface $money): void
-//     {
-//         $this->collectedMoney[] = $money;
-//     }
+    public function __construct() {
+        $this->empty();
+    }
 
-//     public function sum(): float
-//     {
+    public function add(MoneyInterface $money): void
+    {
+        $this->collectedMoney[] = $money;
+    }
 
-//     }
+    public function sum(): float
+    {
 
-//     public function merge(MoneyCollectionInterface $moneyCollection): void
-//     {
+    }
 
-//     }
+    public function merge(MoneyCollectionInterface $moneyCollection): void
+    {
 
-//     public function empty(): void
-//     {
-//         $this->collection = array();
-//     }
+    }
 
-//     /**
-//      * @return MoneyInterface[]
-//      */
-//     public function toArray(): array
-//     {
-//         return $this->collectedMoney;
-//     }
-// }
+    public function empty(): void
+    {
+        $this->collection = array();
+    }
+
+    /**
+     * @return MoneyInterface[]
+     */
+    public function toArray(): array
+    {
+        return $this->collectedMoney;
+    }
+}
