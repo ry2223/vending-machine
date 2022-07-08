@@ -2,9 +2,6 @@
 
 namespace VendingMachine\Item;
 
-require_once 'ItemInterface.php';
-require_once 'ItemCodeInterface.php';
-
 class Item implements ItemInterface
 {
     private float $price;

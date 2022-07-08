@@ -2,8 +2,7 @@
 
 namespace VendingMachine\Money;
 
-require_once 'MoneyCollectionInterface.php';
-require_once 'MoneyInterface.php';
+use VendingMachine\Money\Money;
 
 class MoneyCollection implements MoneyCollectionInterface
 {
@@ -16,21 +15,27 @@ class MoneyCollection implements MoneyCollectionInterface
     public function add(MoneyInterface $money): void
     {
         $this->collectedMoney[] = $money;
+
+        //var_dump($money);
     }
 
     public function sum(): float
     {
+        $sum = array_sum($this->collectedMoney);
 
+        //var_dump($sum);
+
+        return $sum;
     }
 
     public function merge(MoneyCollectionInterface $moneyCollection): void
     {
-
+        
     }
 
     public function empty(): void
     {
-        $this->collection = array();
+        $this->collectedMoney = [];
     }
 
     /**

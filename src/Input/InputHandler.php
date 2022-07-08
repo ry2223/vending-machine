@@ -4,47 +4,58 @@ namespace VendingMachine\Input;
 
 use VendingMachine\Exception\InvalidInputException;
 use VendingMachine\Input\InputInterface;
+use VendingMachine\Input\Input;
+use VendingMachine\Input\InputHandlerInterface;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
+use VendingMachine\Action\Action;
+use VendingMachine\Response\Response;
+use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
-    private MoneyCollection $moneyCollection;
+    public function __construct(
+        private VendingMachine $vendingMachine,
+    ) {}
 
     /**
      * @throws InvalidInputException
      */
-	public function getInput(): InputInterface
+    public function getInput(): InputInterface
     {
-        $value = 0.0;
+        $input = strtoupper(readline('Input: '));
+        $value = $this->getCoin($input);
 
-        $input = readline('Input: ');
-        $value = $this->getValue($input);
-
-        $this->moneyCollection->add(new Money($value, $input));
-
-        // if($input) {
+        if (preg_match("/N|D|Q|DOLLAR/", $input) & $value != 0.0) {
+            $this->vendingMachine->insertMoney(new Money($value, $input));
             
-        // }
+        } else if (preg_match("/GET-A|GET-B|GET-C|RETURN-MONEY/", $input)) {
+            $action = new Action($input);
+            $action->handle($this->vendingMachine);
+        }
+
+        return new Input($action, new MoneyCollection());
     }
 
-    private function getValue(string $selection): float
+    private function getCoin(string $selection): float
     {
-        switch($selection) {
+        $coinValue = 0.0;
+        
+        switch ($selection) {
             case 'N':
-                $value = 0.05;
+                $coinValue = 0.05;
                 break;
             case 'D':
-                $value = 0.1;
+                $coinValue = 0.1;
                 break;
             case 'Q':
-                $value = 0.25;
+                $coinValue = 0.25;
                 break;
             case 'DOLLAR':
-                $value = 1.0;
+                $coinValue = 1.0;
                 break;
         }
 
-        return $value;
+        return $coinValue;
     }
 }

@@ -2,11 +2,13 @@
 
 namespace VendingMachine\Response;
 
-class Response
-{
-    private string $response;
+use VendingMachine\Money\MoneyCollectionInterface;
 
-    public function __construct(string $response)
+class Response implements ResponseInterface
+{
+    private $response;
+
+    public function __construct($response)
     {
         $this->response = $response;
     }
