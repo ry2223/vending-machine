@@ -3,10 +3,7 @@
 namespace VendingMachine;
 
 use VendingMachine\Item\ItemCodeInterface;
-use VendingMachine\Item\ItemCollection;
 use VendingMachine\Item\ItemInterface;
-use VendingMachine\Item\Item;
-use VendingMachine\Item\ItemCode;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\MoneyCollectionInterface;
 use VendingMachine\Money\MoneyInterface;
@@ -14,11 +11,9 @@ use VendingMachine\Money\MoneyInterface;
 class VendingMachine implements VendingMachineInterface
 {
     public function __construct(
-        private $moneyCollection,
+        private MoneyCollection $moneyCollection,
         private $itemCollection,
-    ) {
-
-    }
+    ) {}
 
     public function addItem(ItemInterface $item): void
     {
@@ -37,11 +32,13 @@ class VendingMachine implements VendingMachineInterface
 
     public function getCurrentTransactionMoney(): MoneyCollectionInterface
     {
-        // return $this->moneyCollection; // invoke after adding each coin
+        return $this->moneyCollection; // invoke after adding each coin
     }
 
     public function getInsertedMoney(): MoneyCollectionInterface
     {
+        
+        
         // invoke after choosing RETURN-MONEY
     }
 }

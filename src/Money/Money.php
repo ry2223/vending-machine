@@ -4,13 +4,10 @@ namespace VendingMachine\Money;
 
 class Money implements MoneyInterface
 {
-    private float $value;
-	private string $code;
-
-    public function __construct(float $value, string $code) {
-		$this->value = $value;
-		$this->code = $code;
-	}
+    public function __construct(
+        private float $value,
+        private string $code,
+    ) {}
 
     public function getValue(): float
     {

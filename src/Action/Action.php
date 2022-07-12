@@ -2,18 +2,17 @@
 
 namespace VendingMachine\Action;
 
+use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Response\ResponseInterface;
 use VendingMachine\Response\Response;
 use VendingMachine\VendingMachineInterface;
 
 class Action implements ActionInterface
 {
-    private string $name;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+    public function __construct(
+        private string $name,
+        private MoneyCollection $moneyCollection,
+    ) {}
 
     public function getName(): string
     {
@@ -22,11 +21,17 @@ class Action implements ActionInterface
 
     public function handle(VendingMachineInterface $vendingMachine): ResponseInterface
     {
-        if ($this->name == "RETURN-MONEY") {
+        if ($this->name == 'N' || $this->name == 'D'|| $this->name == 'Q' || $this->name == 'DOLLAR') {
             
-            var_dump($this->name);
+            return new Response('Current balance: ' . $this->moneyCollection->sum() . PHP_EOL);
+        }
 
-            return new Response($this->name);
+        if ($this->name == 'RETURN-MONEY') {
+
+            return new Response('Response: RETURN-MONEY' . PHP_EOL);
+        } else {
+
+            return new Response('Response: NOT RETURN-MONEY' . PHP_EOL);
         }
     }
 }

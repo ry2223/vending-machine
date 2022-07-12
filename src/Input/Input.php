@@ -7,14 +7,10 @@ use VendingMachine\Money\MoneyCollectionInterface;
 
 class Input implements InputInterface
 {
-    private ActionInterface $action;
-    private MoneyCollectionInterface $moneyCollection;
-
-    public function __construct(ActionInterface $action, MoneyCollectionInterface $moneyCollection)
-    {
-        $this->action = $action;
-        $this->moneyCollection = $moneyCollection;
-    }
+    public function __construct(
+        private ActionInterface $action,
+        private MoneyCollectionInterface $moneyCollection,
+    ) {}
 
 	public function getAction(): ActionInterface
     {

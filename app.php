@@ -6,7 +6,6 @@ use VendingMachine\Item\Item;
 use VendingMachine\Item\ItemCode;
 use VendingMachine\Exception\InvalidInputException;
 use VendingMachine\Input\InputHandler;
-use VendingMachine\Money\Money;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\VendingMachine;
 
@@ -17,15 +16,16 @@ $itemArray = [
 ];
 
 $moneyCollection = new MoneyCollection();
-$vendingMachine = new VendingMachine($itemArray, $moneyCollection);
-$inputHandler = new InputHandler($vendingMachine);
+$moneyCollection->empty();
+
+$vendingMachine = new VendingMachine($moneyCollection, $itemArray);
+$inputHandler = new InputHandler($vendingMachine, $moneyCollection);
 
 while (true) {
 	try {
 		$input = $inputHandler->getInput();
-
-		// $this->vendingMachine->getCurrentTransactionMoney();
-		
+		$action = $input->getAction();
+		echo $action->handle($vendingMachine);
 	} catch (InvalidInputException $e) {
 		echo "Invalid input, try again...\n";
 	}

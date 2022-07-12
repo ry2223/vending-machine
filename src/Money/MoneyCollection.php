@@ -2,28 +2,22 @@
 
 namespace VendingMachine\Money;
 
-use VendingMachine\Money\Money;
-
 class MoneyCollection implements MoneyCollectionInterface
 {
     private array $collectedMoney;
 
-    public function __construct() {
-        $this->empty();
-    }
-
     public function add(MoneyInterface $money): void
     {
         $this->collectedMoney[] = $money;
-
-        //var_dump($money);
     }
 
     public function sum(): float
     {
-        $sum = array_sum($this->collectedMoney);
+        $arr = $this->collectedMoney;
+        $sum = 0.0;
 
-        //var_dump($sum);
+        foreach ($arr as $value)
+            $sum += $value->getValue();
 
         return $sum;
     }

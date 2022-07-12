@@ -9,13 +9,13 @@ use VendingMachine\Input\InputHandlerInterface;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
 use VendingMachine\Action\Action;
-use VendingMachine\Response\Response;
 use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
     public function __construct(
         private VendingMachine $vendingMachine,
+        private MoneyCollection $moneyCollection,
     ) {}
 
     /**
@@ -26,35 +26,29 @@ class InputHandler implements InputHandlerInterface
         $input = strtoupper(readline('Input: '));
         $value = $this->getCoin($input);
 
-        if (preg_match("/N|D|Q|DOLLAR/", $input) & $value != 0.0) {
-            $this->vendingMachine->insertMoney(new Money($value, $input));
-            
-        } else if (preg_match("/GET-A|GET-B|GET-C|RETURN-MONEY/", $input)) {
-            $action = new Action($input);
-            $action->handle($this->vendingMachine);
-        }
+        $action = new Action($input, $this->moneyCollection);
 
-        return new Input($action, new MoneyCollection());
+        if (preg_match('/N|D|Q|DOLLAR|GET-A|GET-B|GET-C|RETURN-MONEY/', $input)) {
+            $this->vendingMachine->insertMoney(new Money($value, $input));
+            $action->handle($this->vendingMachine);
+        } else {
+            throw new InvalidInputException();
+        }
+        
+        return new Input($action, $this->moneyCollection);
     }
 
     private function getCoin(string $selection): float
     {
         $coinValue = 0.0;
-        
-        switch ($selection) {
-            case 'N':
-                $coinValue = 0.05;
-                break;
-            case 'D':
-                $coinValue = 0.1;
-                break;
-            case 'Q':
-                $coinValue = 0.25;
-                break;
-            case 'DOLLAR':
-                $coinValue = 1.0;
-                break;
-        }
+
+        $coinValue = match ($selection) {
+            'N' => $coinValue = 0.05,
+            'D' => $coinValue = 0.1,
+            'Q' => $coinValue = 0.25,
+            'DOLLAR' => $coinValue = 1.0,
+            default => $coinValue = 0.0,
+        };
 
         return $coinValue;
     }
