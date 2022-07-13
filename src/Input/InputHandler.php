@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VendingMachine\Input;
 
 use VendingMachine\Exception\InvalidInputException;
@@ -28,7 +30,7 @@ class InputHandler implements InputHandlerInterface
 
         $action = new Action($input, $this->moneyCollection);
 
-        if (preg_match('/N|D|Q|DOLLAR|GET-A|GET-B|GET-C|RETURN-MONEY/', $input)) {
+        if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
             $this->vendingMachine->insertMoney(new Money($value, $input));
             $action->handle($this->vendingMachine);
         } else {
