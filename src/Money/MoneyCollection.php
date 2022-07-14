@@ -18,8 +18,9 @@ class MoneyCollection implements MoneyCollectionInterface
         $arr = $this->collectedMoney;
         $sum = 0.0;
 
-        foreach ($arr as $value)
+        foreach ($arr as $value) {
             $sum += $value->getValue();
+        }
 
         return $sum;
     }
