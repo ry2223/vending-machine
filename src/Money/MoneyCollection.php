@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace VendingMachine\Money;
 
@@ -15,10 +15,9 @@ class MoneyCollection implements MoneyCollectionInterface
 
     public function sum(): float
     {
-        $arr = $this->collectedMoney;
         $sum = 0.0;
 
-        foreach ($arr as $value) {
+        foreach ($this->collectedMoney as $value) {
             $sum += $value->getValue();
         }
 

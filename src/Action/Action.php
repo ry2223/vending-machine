@@ -1,9 +1,10 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace VendingMachine\Action;
 
+use VendingMachine\Exception\ItemNotFoundException;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Response\ResponseInterface;
 use VendingMachine\Response\Response;
@@ -15,6 +16,8 @@ class Action implements ActionInterface
     public function __construct(
         private string $name,
         private MoneyCollection $moneyCollection,
+        private Money $money,
+        private array &$moneyCode,
     ) {}
 
     public function getName(): string
@@ -26,34 +29,33 @@ class Action implements ActionInterface
     {
         $coin = $this->name;
 
-        if ($coin === 'N' || $coin === 'D'|| $coin === 'Q' || $coin === 'DOLLAR') {
-
-            $result = '';
-
-            foreach ($this->moneyCollection as $value) {
-                $result += $value->getCode();
-            }
-            $codeArray = explode(' ,', $result);
-
-            foreach ($codeArray as $value) {
-                $result = $value;
-            }
-
-            return new Response('Current balance: ' . $this->moneyCollection->sum() . $codeArray . PHP_EOL);
-        }
-
-        if ($coin === 'RETURN-MONEY') {
+        if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $coin)) {
+            $this->moneyCode[] = $this->money->getCode();
+            $implodedCode = implode(', ', $this->moneyCode);
             
+            $sumString = strval($this->moneyCollection->sum());
+            $moneySum = sprintf('%.2f', $sumString);
 
-            return new Response('Response: RETURN-MONEY' . PHP_EOL);
+            return new Response('Current balance: ' . $moneySum . ' (' . $implodedCode . ') ' . PHP_EOL);
         }
 
-        if ($coin === 'GET-A' || $coin === 'GET-B' || $coin === 'GET-C') {
+        try {
+            if (preg_match('#\b(RETURN-MONEY)\b#', $coin)) {
 
-            return new Response("Response: $coin" . PHP_EOL);
-        } else {
 
-            return new Response('Item not found. Please choose another item.' . PHP_EOL);
+                return new Response('Response: RETURN-MONEY' . PHP_EOL);
+            }
+
+            if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $coin)) {
+
+                // else {
+                //     throw new ItemNotFoundException();
+                // }
+
+                return new Response("Response: $coin" . PHP_EOL);
+            }
+        } catch (ItemNotFoundException) {
+            echo 'Item not found. Please choose another item.' . PHP_EOL;
         }
     }
 }

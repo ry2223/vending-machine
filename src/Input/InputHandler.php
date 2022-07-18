@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace VendingMachine\Input;
 
@@ -15,10 +15,14 @@ use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
+    public array $moneyCode;
+
     public function __construct(
         private VendingMachine $vendingMachine,
         private MoneyCollection $moneyCollection,
-    ) {}
+    ) {
+        $this->moneyCode = [];
+    }
 
     /**
      * @throws InvalidInputException
@@ -28,15 +32,15 @@ class InputHandler implements InputHandlerInterface
         $input = strtoupper(readline('Input: '));
         $value = $this->getCoin($input);
 
-        $action = new Action($input, $this->moneyCollection);
+        $money = new Money($value, $input);
+        $action = new Action($input, $this->moneyCollection, $money, $this->moneyCode);
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
-            $this->vendingMachine->insertMoney(new Money($value, $input));
-            $action->handle($this->vendingMachine);
+            $this->vendingMachine->insertMoney($money);
         } else {
             throw new InvalidInputException();
         }
-        
+
         return new Input($action, $this->moneyCollection);
     }
 

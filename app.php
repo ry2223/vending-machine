@@ -26,7 +26,7 @@ while (true) {
 		$input = $inputHandler->getInput();
 		$action = $input->getAction();
 		echo $action->handle($vendingMachine);
-	} catch (InvalidInputException $e) {
-		echo "Invalid input, try again...\n";
+	} catch (InvalidInputException) {
+		echo "WARNING! Action not allowed...\n\n";
 	}
 }
