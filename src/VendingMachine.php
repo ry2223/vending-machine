@@ -39,8 +39,9 @@ class VendingMachine implements VendingMachineInterface
 
     public function getInsertedMoney(): MoneyCollectionInterface
     {
-        
-        
-        // invoke after choosing RETURN-MONEY
+        $money = clone $this->moneyCollection;
+        $this->moneyCollection->empty();
+
+        return $money; // invoke after choosing RETURN-MONEY
     }
 }

@@ -26,7 +26,7 @@ class MoneyCollection implements MoneyCollectionInterface
 
     public function merge(MoneyCollectionInterface $moneyCollection): void
     {
-        
+        // invoke after each purchase (array_merge())
     }
 
     public function empty(): void

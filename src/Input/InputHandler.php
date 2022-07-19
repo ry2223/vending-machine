@@ -11,12 +11,11 @@ use VendingMachine\Input\InputHandlerInterface;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
 use VendingMachine\Action\Action;
+use VendingMachine\Money\MoneyInterface;
 use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
-    public array $moneyCode;
-
     public function __construct(
         private VendingMachine $vendingMachine,
         private MoneyCollection $moneyCollection,
@@ -33,7 +32,7 @@ class InputHandler implements InputHandlerInterface
         $value = $this->getCoin($input);
 
         $money = new Money($value, $input);
-        $action = new Action($input, $this->moneyCollection, $money, $this->moneyCode);
+        $action = new Action($input, $this->moneyCollection, $this->vendingMachine, $money, $this->moneyCode);
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
             $this->vendingMachine->insertMoney($money);
@@ -57,5 +56,12 @@ class InputHandler implements InputHandlerInterface
         };
 
         return $coinValue;
+    }
+
+    public function getMoneyCode(): MoneyInterface
+    {
+        $moneyCode = $this->money->getCode();
+
+        return $moneyCode;
     }
 }
