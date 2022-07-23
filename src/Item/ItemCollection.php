@@ -9,13 +9,11 @@ use VendingMachine\Item\ItemCollectionInterface;
 
 class ItemCollection implements ItemCollectionInterface
 {
-    public function __construct(
-        private array $items,
-    ) {}
+    private array $chosenItems;
 
     public function add(ItemInterface $item): void
     {
-        $this->items[] = $item;
+        $this->chosenItems[] = $item;
     }
 
     /**
@@ -23,7 +21,7 @@ class ItemCollection implements ItemCollectionInterface
      */
     public function get(ItemCodeInterface $itemCode): ItemInterface
     {
-        return $this->$itemCode;
+        // return $this->$itemCode;
     }
 
     public function count(ItemCodeInterface $itemCode): int
@@ -33,6 +31,6 @@ class ItemCollection implements ItemCollectionInterface
 
     public function empty(): void
     {
-        $this->items = [];
+        $this->chosenItems = [];
     }
 }

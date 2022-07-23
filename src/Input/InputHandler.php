@@ -11,10 +11,9 @@ use VendingMachine\Input\Input;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
 use VendingMachine\Action\Action;
+use VendingMachine\VendingMachine;
 use VendingMachine\Item\Item;
 use VendingMachine\Item\ItemCode;
-use VendingMachine\Item\ItemCollection;
-use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
@@ -23,9 +22,6 @@ class InputHandler implements InputHandlerInterface
     public function __construct(
         private VendingMachine $vendingMachine,
         private MoneyCollection $moneyCollection,
-        private ItemCollection $itemCollection,
-        private Item $item,
-        private ItemCode $itemCode,
     ) {}
 
     /**
@@ -39,13 +35,9 @@ class InputHandler implements InputHandlerInterface
         $money = new Money($value, $input);
         $action = new Action(
             $input,
-            $this->moneyCollection,
             $this->vendingMachine,
             $money,
-            $this->moneyCode,
-            $this->itemCollection,
-            $this->item,
-            $this->itemCode
+            $this->moneyCode
         );
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
@@ -68,5 +60,14 @@ class InputHandler implements InputHandlerInterface
         };
 
         return $coinValue;
+    }
+
+    public function createItems()
+    {
+        $items = [
+            new Item(0.65, 1, new ItemCode('A')),
+            new Item(1.0, 1, new ItemCode('B')),
+            new Item(1.5, 1, new ItemCode('C'))
+        ];
     }
 }

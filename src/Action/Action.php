@@ -6,8 +6,6 @@ namespace VendingMachine\Action;
 
 use VendingMachine\Action\ActionInterface;
 use VendingMachine\Exception\ItemNotFoundException;
-use VendingMachine\Item\Item;
-use VendingMachine\Item\ItemCode;
 use VendingMachine\Item\ItemCollection;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Response\ResponseInterface;
@@ -22,13 +20,9 @@ class Action implements ActionInterface
 
     public function __construct(
         private string $name,
-        private MoneyCollection $moneyCollection,
         private VendingMachine $vendingMachine,
         private Money $money,
         private array &$moneyCode,
-        private ItemCollection $itemCollection,
-        private Item $item,
-        private ItemCode $itemCode,
     ) {}
 
     public function getName(): string
@@ -59,18 +53,7 @@ class Action implements ActionInterface
 
             if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
                 if ($this->name === 'GET-A') {
-                    print_r($this->item);
 
-                    foreach ($this->item as $xd) {
-                        $this->itemCodeArray[] = $xd->code->getCount();
-                        print_r($this->itemCodeArray[0]);
-                    }
-
-                    print_r($this->itemCode);
-
-                    // foreach ($this->itemCodeArray as $itemCode) {
-                    //     $this->vendingMachine->addItem($itemCode);
-                    // }
 
                     return new Response('You have bought: A!' . PHP_EOL);
                 } elseif ($this->name === 'GET-B') {
