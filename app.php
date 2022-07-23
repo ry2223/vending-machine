@@ -6,20 +6,32 @@ use VendingMachine\Item\Item;
 use VendingMachine\Item\ItemCode;
 use VendingMachine\Exception\InvalidInputException;
 use VendingMachine\Input\InputHandler;
+use VendingMachine\Item\ItemCollection;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\VendingMachine;
 
-$itemArray = [
+$items = [
 	new Item(0.65, 1, new ItemCode('A')),
 	new Item(1.0, 1, new ItemCode('B')),
 	new Item(1.5, 1, new ItemCode('C')),
 ];
 
+foreach ($items as $item) {
+	$item;
+	$itemCode = $item->getCode();
+}
+
 $moneyCollection = new MoneyCollection();
 $moneyCollection->empty();
-
-$vendingMachine = new VendingMachine($moneyCollection, $itemArray);
-$inputHandler = new InputHandler($vendingMachine, $moneyCollection);
+$itemCollection = new ItemCollection($items);
+$vendingMachine = new VendingMachine($moneyCollection, $itemCollection);
+$inputHandler = new InputHandler(
+	$vendingMachine,
+	$moneyCollection,
+	$itemCollection,
+	$item,
+	$itemCode
+);
 
 while (true) {
 	try {

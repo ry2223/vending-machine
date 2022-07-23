@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace VendingMachine\Action;
 
+use VendingMachine\Action\ActionInterface;
 use VendingMachine\Exception\ItemNotFoundException;
+use VendingMachine\Item\Item;
+use VendingMachine\Item\ItemCode;
+use VendingMachine\Item\ItemCollection;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Response\ResponseInterface;
 use VendingMachine\Response\Response;
@@ -14,12 +18,17 @@ use VendingMachine\VendingMachine;
 
 class Action implements ActionInterface
 {
+    private array $itemCodeArray = [];
+
     public function __construct(
         private string $name,
         private MoneyCollection $moneyCollection,
         private VendingMachine $vendingMachine,
         private Money $money,
         private array &$moneyCode,
+        private ItemCollection $itemCollection,
+        private Item $item,
+        private ItemCode $itemCode,
     ) {}
 
     public function getName(): string
@@ -29,12 +38,10 @@ class Action implements ActionInterface
 
     public function handle(VendingMachineInterface $vendingMachine): ResponseInterface
     {
-        $action = $this->name;
-
-        if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $action)) {
+        if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $this->name)) {
             $this->moneyCode[] = $this->money->getCode();
             $implodedCode = implode(', ', $this->moneyCode);
-            
+
             $sumString = strval($this->vendingMachine->getCurrentTransactionMoney()->sum());
             $moneySum = sprintf('%.2f', $sumString);
 
@@ -42,21 +49,41 @@ class Action implements ActionInterface
         }
 
         try {
-            if (preg_match('#\b(RETURN-MONEY)\b#', $action)) {
+            if (preg_match('#\b(RETURN-MONEY)\b#', $this->name)) {
                 $vendingMachine->getInsertedMoney();
                 $implodedCode = implode(', ', $this->moneyCode);
-                $this->moneyCode = []; // TO-DO: change passing data by reference to passing by value
+                $this->moneyCode = [];
 
                 return new Response($implodedCode . PHP_EOL);
             }
 
-            if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $action)) {
+            if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
+                if ($this->name === 'GET-A') {
+                    print_r($this->item);
+
+                    foreach ($this->item as $xd) {
+                        $this->itemCodeArray[] = $xd->code->getCount();
+                        print_r($this->itemCodeArray[0]);
+                    }
+
+                    print_r($this->itemCode);
+
+                    // foreach ($this->itemCodeArray as $itemCode) {
+                    //     $this->vendingMachine->addItem($itemCode);
+                    // }
+
+                    return new Response('You have bought: A!' . PHP_EOL);
+                } elseif ($this->name === 'GET-B') {
+
+                    return new Response($this->name . PHP_EOL);
+                } elseif ($this->name === 'GET-C') {
+
+                    return new Response($this->name . PHP_EOL);
+                }
 
                 // else {
                 //     throw new ItemNotFoundException();
                 // }
-
-                return new Response("Response: $action" . PHP_EOL);
             }
         } catch (ItemNotFoundException) {
             echo 'Item not found. Please choose another item.' . PHP_EOL;

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VendingMachine\Money;
 
+use VendingMachine\Money\MoneyCollectionInterface;
+
 class MoneyCollection implements MoneyCollectionInterface
 {
     private array $collectedMoney;

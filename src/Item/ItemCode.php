@@ -2,6 +2,8 @@
 
 namespace VendingMachine\Item;
 
+use VendingMachine\Item\ItemCodeInterface;
+
 class ItemCode implements ItemCodeInterface
 {
 	public function __construct(

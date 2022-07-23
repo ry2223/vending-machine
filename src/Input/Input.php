@@ -2,6 +2,7 @@
 
 namespace VendingMachine\Input;
 
+use VendingMachine\Input\InputInterface;
 use VendingMachine\Action\ActionInterface;
 use VendingMachine\Money\MoneyCollectionInterface;
 

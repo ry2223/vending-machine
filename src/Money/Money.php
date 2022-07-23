@@ -2,6 +2,8 @@
 
 namespace VendingMachine\Money;
 
+use VendingMachine\Money\MoneyInterface;
+
 class Money implements MoneyInterface
 {
     public function __construct(

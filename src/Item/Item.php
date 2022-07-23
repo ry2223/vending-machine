@@ -2,6 +2,8 @@
 
 namespace VendingMachine\Item;
 
+use VendingMachine\Item\ItemInterface;
+
 class Item implements ItemInterface
 {
     private float $price;

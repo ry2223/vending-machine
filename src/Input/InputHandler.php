@@ -4,24 +4,29 @@ declare(strict_types=1);
 
 namespace VendingMachine\Input;
 
+use VendingMachine\Input\InputHandlerInterface;
 use VendingMachine\Exception\InvalidInputException;
 use VendingMachine\Input\InputInterface;
 use VendingMachine\Input\Input;
-use VendingMachine\Input\InputHandlerInterface;
 use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
 use VendingMachine\Action\Action;
-use VendingMachine\Money\MoneyInterface;
+use VendingMachine\Item\Item;
+use VendingMachine\Item\ItemCode;
+use VendingMachine\Item\ItemCollection;
 use VendingMachine\VendingMachine;
 
 class InputHandler implements InputHandlerInterface
 {
+    private $moneyCode = [];
+
     public function __construct(
         private VendingMachine $vendingMachine,
         private MoneyCollection $moneyCollection,
-    ) {
-        $this->moneyCode = [];
-    }
+        private ItemCollection $itemCollection,
+        private Item $item,
+        private ItemCode $itemCode,
+    ) {}
 
     /**
      * @throws InvalidInputException
@@ -32,7 +37,16 @@ class InputHandler implements InputHandlerInterface
         $value = $this->getCoin($input);
 
         $money = new Money($value, $input);
-        $action = new Action($input, $this->moneyCollection, $this->vendingMachine, $money, $this->moneyCode);
+        $action = new Action(
+            $input,
+            $this->moneyCollection,
+            $this->vendingMachine,
+            $money,
+            $this->moneyCode,
+            $this->itemCollection,
+            $this->item,
+            $this->itemCode
+        );
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
             $this->vendingMachine->insertMoney($money);
@@ -45,8 +59,6 @@ class InputHandler implements InputHandlerInterface
 
     private function getCoin(string $selection): float
     {
-        $coinValue = 0.0;
-
         $coinValue = match ($selection) {
             'N' => $coinValue = 0.05,
             'D' => $coinValue = 0.1,
@@ -56,12 +68,5 @@ class InputHandler implements InputHandlerInterface
         };
 
         return $coinValue;
-    }
-
-    public function getMoneyCode(): MoneyInterface
-    {
-        $moneyCode = $this->money->getCode();
-
-        return $moneyCode;
     }
 }
