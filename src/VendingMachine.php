@@ -26,7 +26,8 @@ class VendingMachine implements VendingMachineInterface
 
     public function dropItem(ItemCodeInterface $itemCode): void
     {
-        
+        $this->itemCollection->get($itemCode);
+        $this->itemCollection->count($itemCode);
     }
 
     public function insertMoney(MoneyInterface $money): void

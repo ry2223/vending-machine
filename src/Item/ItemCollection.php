@@ -9,11 +9,11 @@ use VendingMachine\Item\ItemCollectionInterface;
 
 class ItemCollection implements ItemCollectionInterface
 {
-    private array $chosenItems = [];
+    private array $items;
 
     public function add(ItemInterface $item): void
     {
-        $this->chosenItems[] = $item;
+        $this->items[] = $item;
     }
 
     /**
@@ -21,16 +21,34 @@ class ItemCollection implements ItemCollectionInterface
      */
     public function get(ItemCodeInterface $itemCode): ItemInterface
     {
-        // return $this->$itemCode;
+        foreach ($this->items as $item) {
+            if ($item->getCode() == $itemCode) {
+                $selectedItem = $item;
+            }
+        }
+
+        if ($this->count($itemCode) < 1) {
+            throw new ItemNotFoundException();
+        }
+        
+        return $selectedItem;
     }
 
     public function count(ItemCodeInterface $itemCode): int
     {
+        $itemCount = 1;
 
+        foreach ($this->items as $item) {
+            if ($item->getCode() == $itemCode) {
+                $selectedItemCount = $item->getCount();
+            }
+        }
+
+        return $selectedItemCount;
     }
 
     public function empty(): void
     {
-        $this->chosenItems = [];
+        $this->items = [];
     }
 }

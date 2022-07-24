@@ -6,9 +6,6 @@ namespace VendingMachine\Action;
 
 use VendingMachine\Action\ActionInterface;
 use VendingMachine\Exception\ItemNotFoundException;
-use VendingMachine\Item\Item;
-use VendingMachine\Item\ItemCollection;
-use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Response\ResponseInterface;
 use VendingMachine\Response\Response;
 use VendingMachine\VendingMachineInterface;
@@ -24,7 +21,7 @@ class Action implements ActionInterface
         private VendingMachine $vendingMachine,
         private Money $money,
         private array &$moneyCode,
-        private array $item,
+        private array $items,
     ) {}
 
     public function getName(): string
@@ -54,24 +51,22 @@ class Action implements ActionInterface
             }
 
             if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
-                if ($this->name === 'GET-A') {
-                    foreach ($this->item as $item) {
-                        $this->vendingMachine->addItem($item);
-                    }
+                $explodedAction = explode('-' , $this->name);
 
-                    foreach ($this->item as $item) {
-                        $this->itemCodeArray[] = $item->getCode();
-                    }
-
-                    return new Response('You have bought: ' . $this->itemCodeArray[0] . PHP_EOL);
+                foreach ($this->items as $item) {
+                    $this->itemCodeArray[] = $item->getCode();
                 }
 
-                // else {
-                //     throw new ItemNotFoundException();
-                // }
+                foreach ($this->itemCodeArray as $itemCode) {
+                    if ($itemCode == $explodedAction[1]) {
+                        $this->vendingMachine->dropItem($itemCode);
+                    }
+                }
+
+                return new Response($explodedAction[1] . PHP_EOL);
             }
         } catch (ItemNotFoundException) {
-            echo 'Item not found. Please choose another item.' . PHP_EOL;
+            return new Response('Item not found. Please choose another item.' . PHP_EOL);
         }
     }
 }

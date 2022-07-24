@@ -14,7 +14,6 @@ use VendingMachine\Action\Action;
 use VendingMachine\VendingMachine;
 use VendingMachine\Item\Item;
 use VendingMachine\Item\ItemCode;
-use VendingMachine\Item\ItemInterface;
 
 class InputHandler implements InputHandlerInterface
 {
@@ -74,5 +73,12 @@ class InputHandler implements InputHandlerInterface
         ];
 
         return $items;
+    }
+
+    public function addItems(): void
+    {
+        foreach ($this->createItems() as $item) {
+            $this->vendingMachine->addItem($item);
+        }
     }
 }

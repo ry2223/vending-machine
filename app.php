@@ -14,6 +14,7 @@ $vendingMachine = new VendingMachine($moneyCollection, $itemCollection);
 $moneyCollection->empty();
 $inputHandler = new InputHandler($vendingMachine, $moneyCollection);
 $inputHandler->createItems();
+$inputHandler->addItems();
 
 while (true) {
 	try {
