@@ -9,7 +9,7 @@ use VendingMachine\Item\ItemCollectionInterface;
 
 class ItemCollection implements ItemCollectionInterface
 {
-    private array $chosenItems;
+    private array $chosenItems = [];
 
     public function add(ItemInterface $item): void
     {
