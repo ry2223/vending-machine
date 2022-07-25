@@ -22,6 +22,6 @@ while (true) {
 		$action = $input->getAction();
 		echo $action->handle($vendingMachine);
 	} catch (InvalidInputException) {
-		echo "WARNING! Action not allowed...\n\n";
+		echo "WARNING! Action not allowed.\n\n";
 	}
 }

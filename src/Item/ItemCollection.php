@@ -21,23 +21,23 @@ class ItemCollection implements ItemCollectionInterface
      */
     public function get(ItemCodeInterface $itemCode): ItemInterface
     {
-        foreach ($this->items as $item) {
-            if ($item->getCode() == $itemCode) {
-                $selectedItem = $item;
-            }
-        }
-
         if ($this->count($itemCode) < 1) {
             throw new ItemNotFoundException();
         }
-        
+
+        foreach ($this->items as $item) {
+            if ($item->getCode() == $itemCode) {
+                $selectedItem = $item;
+                $itemCount = $this->count($itemCode);
+                $item->setCount($itemCount -= 1);
+            }
+        }
+
         return $selectedItem;
     }
 
     public function count(ItemCodeInterface $itemCode): int
     {
-        $itemCount = 1;
-
         foreach ($this->items as $item) {
             if ($item->getCode() == $itemCode) {
                 $selectedItemCount = $item->getCount();

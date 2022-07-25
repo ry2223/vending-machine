@@ -53,17 +53,20 @@ class Action implements ActionInterface
             if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
                 $explodedAction = explode('-' , $this->name);
 
-                foreach ($this->items as $item) {
-                    $this->itemCodeArray[] = $item->getCode();
-                }
+                // print_r($this->vendingMachine->getCurrentTransactionMoney()->sum() . PHP_EOL);
 
-                foreach ($this->itemCodeArray as $itemCode) {
-                    if ($itemCode == $explodedAction[1]) {
-                        $this->vendingMachine->dropItem($itemCode);
+                foreach ($this->items as $item) {
+                    if ($item->getCode() == $explodedAction[1]) {
+                        if ($this->vendingMachine->getCurrentTransactionMoney()->sum() >= $item->getPrice()) {
+                            // print_r($item->getPrice() . PHP_EOL);
+                            $this->vendingMachine->dropItem($item->getCode());
+                            
+                            return new Response($explodedAction[1] . PHP_EOL);
+                        }
                     }
                 }
 
-                return new Response($explodedAction[1] . PHP_EOL);
+                return new Response('Not enough money.' . PHP_EOL);
             }
         } catch (ItemNotFoundException) {
             return new Response('Item not found. Please choose another item.' . PHP_EOL);

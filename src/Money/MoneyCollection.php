@@ -9,6 +9,7 @@ use VendingMachine\Money\MoneyCollectionInterface;
 class MoneyCollection implements MoneyCollectionInterface
 {
     private array $collectedMoney;
+    private array $spentMoney;
 
     public function add(MoneyInterface $money): void
     {
@@ -22,6 +23,8 @@ class MoneyCollection implements MoneyCollectionInterface
         foreach ($this->collectedMoney as $value) {
             $sum += $value->getValue();
         }
+
+        // print_r($this->collectedMoney);
 
         return $sum;
     }

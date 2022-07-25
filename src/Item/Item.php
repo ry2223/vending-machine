@@ -27,6 +27,11 @@ class Item implements ItemInterface
         return $this->count;
     }
 
+    public function setCount($count): void
+    {
+        $this->count = $count;
+    }
+
     public function getCode(): ItemCodeInterface
     {
         return $this->code;

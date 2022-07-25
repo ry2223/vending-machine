@@ -39,11 +39,13 @@ class InputHandler implements InputHandlerInterface
             $this->vendingMachine,
             $money,
             $this->moneyCode,
-            self::createItems()
+            $this->createItems()
         );
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
-            $this->vendingMachine->insertMoney($money);
+            if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $input)) {
+                $this->vendingMachine->insertMoney($money);
+            }        
         } else {
             throw new InvalidInputException();
         }
