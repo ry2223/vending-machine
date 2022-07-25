@@ -14,8 +14,6 @@ use VendingMachine\VendingMachine;
 
 class Action implements ActionInterface
 {
-    private array $itemCodeArray = [];
-
     public function __construct(
         private string $name,
         private VendingMachine $vendingMachine,
@@ -47,19 +45,24 @@ class Action implements ActionInterface
                 $implodedCode = implode(', ', $this->moneyCode);
                 $this->moneyCode = [];
 
+                // TO-DO: write code to return coin change:
+                //   check how much money is left
+                //   return change based on the money amount
+
                 return new Response($implodedCode . PHP_EOL);
             }
 
             if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
                 $explodedAction = explode('-' , $this->name);
 
-                // print_r($this->vendingMachine->getCurrentTransactionMoney()->sum() . PHP_EOL);
-
                 foreach ($this->items as $item) {
                     if ($item->getCode() == $explodedAction[1]) {
                         if ($this->vendingMachine->getCurrentTransactionMoney()->sum() >= $item->getPrice()) {
-                            // print_r($item->getPrice() . PHP_EOL);
                             $this->vendingMachine->dropItem($item->getCode());
+
+                            // TO-DO: change below code to use merge
+                            $this->money->setValue($item->getPrice() * -1);
+                            $this->vendingMachine->insertMoney($this->money);
                             
                             return new Response($explodedAction[1] . PHP_EOL);
                         }

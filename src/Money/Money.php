@@ -16,6 +16,11 @@ class Money implements MoneyInterface
         return $this->value;
     }
 
+    public function setValue($value): void
+    {
+        $this->value = $value;
+    }
+
     public function getCode(): string
     {
         return $this->code;

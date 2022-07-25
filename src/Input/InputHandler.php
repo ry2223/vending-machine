@@ -22,7 +22,7 @@ class InputHandler implements InputHandlerInterface
     public function __construct(
         private VendingMachine $vendingMachine,
         private MoneyCollection $moneyCollection,
-
+        private array $items,
     ) {}
 
     /**
@@ -39,7 +39,7 @@ class InputHandler implements InputHandlerInterface
             $this->vendingMachine,
             $money,
             $this->moneyCode,
-            $this->createItems()
+            $this->items
         );
 
         if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
@@ -64,23 +64,5 @@ class InputHandler implements InputHandlerInterface
         };
 
         return $coinValue;
-    }
-
-    public function createItems(): array
-    {
-        $items = [
-            new Item(0.65, 1, new ItemCode('A')),
-            new Item(1.0, 1, new ItemCode('B')),
-            new Item(1.5, 1, new ItemCode('C'))
-        ];
-
-        return $items;
-    }
-
-    public function addItems(): void
-    {
-        foreach ($this->createItems() as $item) {
-            $this->vendingMachine->addItem($item);
-        }
     }
 }
