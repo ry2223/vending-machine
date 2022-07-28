@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace VendingMachine\Action;
 
-use VendingMachine\Action\ActionInterface;
 use VendingMachine\Exception\ItemNotFoundException;
 use VendingMachine\Response\ResponseInterface;
 use VendingMachine\Response\Response;
 use VendingMachine\VendingMachineInterface;
 use VendingMachine\Money\Money;
 use VendingMachine\VendingMachine;
+use VendingMachine\Action\ActionInterface;
+use VendingMachine\Money\MoneyCollection;
 
 class Action implements ActionInterface
 {
@@ -33,21 +34,34 @@ class Action implements ActionInterface
             $this->moneyCode[] = $this->money->getCode();
             $implodedCode = implode(', ', $this->moneyCode);
 
-            $sumString = strval($this->vendingMachine->getCurrentTransactionMoney()->sum());
+            $sumString = strval($this->vendingMachine->getCurrentTransactionMoney()->sum() / 100);
             $moneySum = sprintf('%.2f', $sumString);
 
             return new Response('Current balance: ' . $moneySum . ' (' . $implodedCode . ') ' . PHP_EOL);
         }
 
         try {
-            if (preg_match('#\b(RETURN-MONEY)\b#', $this->name)) {
-                $vendingMachine->getInsertedMoney();
-                $implodedCode = implode(', ', $this->moneyCode);
+            if (preg_match('#\b(RETURN-MONEY)\b#', $this->name)) {           
+                $sum = $this->vendingMachine->getCurrentTransactionMoney()->sum();
+                $coinChange = [];
+                $coinArray = [
+                    'DOLLAR' => 100,
+                    'Q' => 25,
+                    'D' => 10,
+                    'N' => 5
+                ];
+                while ($sum > 0) {
+                    foreach ($coinArray as $coin => $value) {
+                        if ($sum >= $value) {
+                            $sum -= $value;
+                            $coinChange[] = $coin;
+                            break;
+                        }
+                    }
+                }
+                $this->vendingMachine->getInsertedMoney();
                 $this->moneyCode = [];
-
-                // TO-DO: write code to return coin change:
-                //   check how much money is left
-                //   return change based on the money amount
+                $implodedCode = implode(', ', $coinChange);
 
                 return new Response($implodedCode . PHP_EOL);
             }
@@ -59,11 +73,10 @@ class Action implements ActionInterface
                     if ($item->getCode() == $explodedAction[1]) {
                         if ($this->vendingMachine->getCurrentTransactionMoney()->sum() >= $item->getPrice()) {
                             $this->vendingMachine->dropItem($item->getCode());
-
-                            // TO-DO: change below code to use merge
                             $this->money->setValue($item->getPrice() * -1);
                             $this->vendingMachine->insertMoney($this->money);
-                            
+                            $this->moneyCode = [];
+
                             return new Response($explodedAction[1] . PHP_EOL);
                         }
                     }

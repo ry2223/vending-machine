@@ -17,7 +17,7 @@ class MoneyCollection implements MoneyCollectionInterface
  
     public function sum(): float
     {
-        $sum = 0.0;
+        $sum = 0;
 
         foreach ($this->collectedMoney as $value) {
             $sum += $value->getValue();
@@ -28,11 +28,9 @@ class MoneyCollection implements MoneyCollectionInterface
 
     public function merge(MoneyCollectionInterface $moneyCollection): void
     {
-        // invoke after each purchase; use array_merge()
+        // invoke after each purchase;
+        // use array_merge() to merge both moneyCode arrays
         // use toArray() method
-
-        print_r($this->collectedMoney);
-        print_r($moneyCollection);
     }
 
     public function empty(): void

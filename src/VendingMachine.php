@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VendingMachine;
 
 use VendingMachine\VendingMachineInterface;
@@ -41,7 +39,7 @@ class VendingMachine implements VendingMachineInterface
 
     public function getInsertedMoney(): MoneyCollectionInterface
     {
-        $money = clone $this->moneyCollection;
+        $money = $this->moneyCollection;
         $this->moneyCollection->empty();
 
         return $money;

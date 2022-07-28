@@ -56,11 +56,11 @@ class InputHandler implements InputHandlerInterface
     private function getCoin(string $selection): float
     {
         $coinValue = match ($selection) {
-            'N' => $coinValue = 0.05,
-            'D' => $coinValue = 0.1,
-            'Q' => $coinValue = 0.25,
-            'DOLLAR' => $coinValue = 1.0,
-            default => $coinValue = 0.0,
+            'N' => $coinValue = 5,
+            'D' => $coinValue = 10,
+            'Q' => $coinValue = 25,
+            'DOLLAR' => $coinValue = 100,
+            default => $coinValue = 0,
         };
 
         return $coinValue;

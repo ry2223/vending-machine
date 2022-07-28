@@ -11,9 +11,9 @@ use VendingMachine\Money\MoneyCollection;
 use VendingMachine\VendingMachine;
 
 $items = [
-	new Item(0.65, 1, new ItemCode('A')),
-	new Item(1.0, 1, new ItemCode('B')),
-	new Item(1.5, 1, new ItemCode('C'))
+	new Item(65, 1, new ItemCode('A')),
+	new Item(100, 1, new ItemCode('B')),
+	new Item(150, 1, new ItemCode('C'))
 ];
 
 $itemCollection = new ItemCollection();
