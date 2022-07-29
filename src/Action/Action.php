@@ -21,6 +21,7 @@ class Action implements ActionInterface
         private Money $money,
         private array &$moneyCode,
         private array $items,
+        private array $coinArray,
     ) {}
 
     public function getName(): string
@@ -30,10 +31,9 @@ class Action implements ActionInterface
 
     public function handle(VendingMachineInterface $vendingMachine): ResponseInterface
     {
-        if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $this->name)) {
+        if (preg_match('#^(N|D|Q|DOLLAR)$#', $this->name)) {
             $this->moneyCode[] = $this->money->getCode();
             $implodedCode = implode(', ', $this->moneyCode);
-
             $sumString = strval($this->vendingMachine->getCurrentTransactionMoney()->sum() / 100);
             $moneySum = sprintf('%.2f', $sumString);
 
@@ -41,17 +41,12 @@ class Action implements ActionInterface
         }
 
         try {
-            if (preg_match('#\b(RETURN-MONEY)\b#', $this->name)) {           
+            if (preg_match('#^(RETURN-MONEY)$#', $this->name)) {
                 $sum = $this->vendingMachine->getCurrentTransactionMoney()->sum();
                 $coinChange = [];
-                $coinArray = [
-                    'DOLLAR' => 100,
-                    'Q' => 25,
-                    'D' => 10,
-                    'N' => 5
-                ];
+
                 while ($sum > 0) {
-                    foreach ($coinArray as $coin => $value) {
+                    foreach ($this->coinArray as $coin => $value) {
                         if ($sum >= $value) {
                             $sum -= $value;
                             $coinChange[] = $coin;
@@ -59,14 +54,15 @@ class Action implements ActionInterface
                         }
                     }
                 }
+
+                $implodedCode = implode(', ', $coinChange);
                 $this->vendingMachine->getInsertedMoney();
                 $this->moneyCode = [];
-                $implodedCode = implode(', ', $coinChange);
 
                 return new Response($implodedCode . PHP_EOL);
             }
 
-            if (preg_match('#\b(GET-A|GET-B|GET-C)\b#', $this->name)) {
+            if (preg_match('#^(GET-[A-C])$#', $this->name)) {
                 $explodedAction = explode('-' , $this->name);
 
                 foreach ($this->items as $item) {

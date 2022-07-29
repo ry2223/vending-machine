@@ -8,7 +8,7 @@ use VendingMachine\Money\MoneyCollectionInterface;
 
 class MoneyCollection implements MoneyCollectionInterface
 {
-    private array $collectedMoney;
+    private array $collectedMoney = [];
 
     public function add(MoneyInterface $money): void
     {
@@ -28,9 +28,7 @@ class MoneyCollection implements MoneyCollectionInterface
 
     public function merge(MoneyCollectionInterface $moneyCollection): void
     {
-        // invoke after each purchase;
-        // use array_merge() to merge both moneyCode arrays
-        // use toArray() method
+        array_merge($this->collectedMoney, $this->toArray($moneyCollection));
     }
 
     public function empty(): void

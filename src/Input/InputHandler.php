@@ -12,12 +12,10 @@ use VendingMachine\Money\MoneyCollection;
 use VendingMachine\Money\Money;
 use VendingMachine\Action\Action;
 use VendingMachine\VendingMachine;
-use VendingMachine\Item\Item;
-use VendingMachine\Item\ItemCode;
 
 class InputHandler implements InputHandlerInterface
 {
-    private $moneyCode = [];
+    private array $moneyCode = [];
 
     public function __construct(
         private VendingMachine $vendingMachine,
@@ -30,8 +28,21 @@ class InputHandler implements InputHandlerInterface
      */
     public function getInput(): InputInterface
     {
+        $coinArray = [
+            'DOLLAR' => 100,
+            'Q' => 25,
+            'D' => 10,
+            'N' => 5
+        ];
+
+        $value = 0;
         $input = strtoupper(readline('Input: '));
-        $value = $this->getCoin($input);
+
+        foreach ($coinArray as $coin => $coinValue) {
+            if ($coin === $input) {
+                $value = $coinValue;
+            }
+        }
 
         $money = new Money($value, $input);
         $action = new Action(
@@ -39,30 +50,18 @@ class InputHandler implements InputHandlerInterface
             $this->vendingMachine,
             $money,
             $this->moneyCode,
-            $this->items
+            $this->items,
+            $coinArray
         );
 
-        if (preg_match('#\b(N|D|Q|DOLLAR|RETURN-MONEY|GET-A|GET-B|GET-C)\b#', $input)) {
-            if (preg_match('#\b(N|D|Q|DOLLAR)\b#', $input)) {
+        if (preg_match('#^(N|D|Q|DOLLAR|RETURN-MONEY|GET-[A-C])$#', $input)) {
+            if (preg_match('#^(N|D|Q|DOLLAR)$#', $input)) {
                 $this->vendingMachine->insertMoney($money);
             }        
         } else {
             throw new InvalidInputException();
-        }
+        }   
 
         return new Input($action, $this->moneyCollection);
-    }
-
-    private function getCoin(string $selection): float
-    {
-        $coinValue = match ($selection) {
-            'N' => $coinValue = 5,
-            'D' => $coinValue = 10,
-            'Q' => $coinValue = 25,
-            'DOLLAR' => $coinValue = 100,
-            default => $coinValue = 0,
-        };
-
-        return $coinValue;
     }
 }
