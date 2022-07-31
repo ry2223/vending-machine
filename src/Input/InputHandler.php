@@ -47,7 +47,6 @@ class InputHandler implements InputHandlerInterface
         $money = new Money($value, $input);
         $action = new Action(
             $input,
-            $this->vendingMachine,
             $money,
             $this->moneyCode,
             $this->items,

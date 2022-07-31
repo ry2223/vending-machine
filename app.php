@@ -19,7 +19,6 @@ $items = [
 $itemCollection = new ItemCollection();
 $moneyCollection = new MoneyCollection();
 $vendingMachine = new VendingMachine($moneyCollection, $itemCollection);
-$moneyCollection->empty();
 $inputHandler = new InputHandler($vendingMachine, $moneyCollection, $items);
 
 foreach ($items as $item) {

@@ -28,7 +28,7 @@ class MoneyCollection implements MoneyCollectionInterface
 
     public function merge(MoneyCollectionInterface $moneyCollection): void
     {
-        array_merge($this->collectedMoney, $this->toArray($moneyCollection));
+        $this->collectedMoney = array_merge($this->collectedMoney, $this->toArray($moneyCollection));
     }
 
     public function empty(): void
