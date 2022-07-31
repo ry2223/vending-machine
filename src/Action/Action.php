@@ -78,6 +78,8 @@ class Action implements ActionInterface
                 $coinsToReturn = $this->moneyCode;
             }
             $implodedCode = implode(', ', $coinsToReturn);
+            $this->moneyCode = [];
+            $vendingMachine->getInsertedMoney();
 
             return new Response($implodedCode . PHP_EOL);
         }
